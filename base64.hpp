@@ -1,19 +1,23 @@
 //
 //  base64.hpp
+//  tesmon
 //
 //  snarfed from
 //  https://stackoverflow.com/questions/180947/base64-decode-snippet-in-c
 //
 //  credit to Michal Lihocký
 //
-// added function to encode std::string in addition to std::vector<BYTE> - colege@gmail.com
+// added overload to encode std::string in addition to std::vector<BYTE> - colege@gmail.com
 
 /*  USAGE
  
- std::vector<BYTE> myData;
+ std::vector<BYTE>  myData;
+ std::string        myString;
+ std::string        encodedString;
  ...
  std::string encodedData = base64_encode(&myData[0], myData.size());
- std::vector<BYTE> decodedData = base64_decode(encodedData);
+ std::string encodedData = base64_encode(myString, myString.size());
+ std::vector<BYTE> decodedData = base64_decode(encodedString);
  
  */
 

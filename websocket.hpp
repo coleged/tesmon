@@ -1,6 +1,8 @@
 //
 //  websocket.hpp
-//  git_test
+//  tesmon
+//
+//  WebSocket Wrapper class: IXWebSocket
 //
 //  Created by Ed Cole on 20/10/2020.
 //  Copyright © 2020 colege. All rights reserved.
@@ -11,15 +13,6 @@
 
 #include <stdio.h>
 
-/*
-#include "easywsclient.hpp"
-
-#define TESLA_WS_URI "ws://streaming.vn.teslamotors.com/streaming/"
-
-class MyWebSocket: public easywsclient::WebSocket{
-    
-};
- */
 
 #define TESLA_WS_URI "wss://streaming.vn.teslamotors.com/streaming/"
 

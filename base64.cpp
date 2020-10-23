@@ -1,11 +1,13 @@
 //
 //  base64.cpp
+//  tesmon
 //
 //  snarfed from
 //  https://stackoverflow.com/questions/180947/base64-decode-snippet-in-c
 //
 //  credit to Michal Lihocký
 //
+// added overload to encode std::string in addition to std::vector<BYTE> - colege@gmail.com
 
 #include "base64.hpp"
 #include <iostream>

@@ -1,5 +1,10 @@
 //
 //  main.cpp
+//  tesmon
+//
+//  Tesla monitor and control tool
+//
+//  Development prototying and experimentation
 //
 //  Created by Ed Cole on 15/10/2020.
 //  Copyright © 2020 colege. All rights reserved.

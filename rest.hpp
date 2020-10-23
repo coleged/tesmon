@@ -1,5 +1,8 @@
 //
 //  rest.hpp
+//  tesmon
+//
+//  wrapper class for REST: restclient-cpp
 //
 //
 //  Created by Ed Cole on 18/10/2020.
