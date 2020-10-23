@@ -26,19 +26,6 @@
 #endif
 bool debug = _DEBUG;
 
-static MyWebSocket::WebSocket* ws = nullptr; // WebSocket for streaming
-
-// Handler for receipts on WebSocket
-void ws_handler(const std::string & message)
-{
-    printf(">>> %s\n", message.c_str());
-     if (message == "world"){
-         // ws->close();
-         
-     }
-    
-}
-
 
 // *******************************
 //       main
@@ -86,105 +73,6 @@ int main(int argc, const char * argv[]) {
     
     // finished with this REST connection for now
     delete myTesla;
-    
-    /*
-     
-     ******* HINTS *******
-     
-     {'uri': s_url + long_vid +'/?values=' + argv.values,
-     'method' : 'GET',
-     'auth': {'user': creds.username,'pass': token},
-     'timeout' : 125000 // a bit more than the expected 2 minute max long poll
-     },
-     
-     var streamdata = {
-         id_s : vid.toString(),
-         vehicle_id : long_vid,
-         timestamp : array[0],
-         speed : array[1],
-         odometer : array[2],
-         soc : array[3],
-         elevation : array[4],
-         est_heading : array[5],
-         est_lat : array[6],
-         est_lng : array[7],
-         power : array[8],
-         shift_state : array[9],
-         range : array[10],
-         est_range : array[11],
-         heading : array[12]
-     };
-
-     exports.stream_columns = [ 'speed',
-                                'odometer',
-                                'soc',
-                                'elevation',
-                                'est_heading',
-                                'est_lat',
-                                'est_lng',
-                                'power',
-                                'shift_state',
-                                'range',
-                                'est_range',
-                                'heading'
-                               ];
-
-     exports.stream = function(options, cb) {
-       if (!cb) cb = function(error, response, body) {
-                //jshint unused: false
-       };
-     
-
-       request({ method : 'GET',
-                 url    : 'https://streaming.vn.teslamotors.com/stream/' + options.vehicle_id + '/?values=' + exports.stream_columns.join(','),
-                 gzip: true,
-                 auth   :
-                 { user : options.email,
-                   pass : options.password
-                 }
-               }, cb);
-     };
-
-     "ws://streaming.vn.teslamotors.com/streaming/"
-     
-     if (this.ws || !this.vid || !this.token) {
-             return;
-     }
-     ulog('opening new websocket, vid=' + this.vid + ', token=' + this.token + ', backoff=' + this.backoff);
-     this.ws = new WebSocket('wss://streaming.vn.teslamotors.com/streaming/', {
-             followRedirects: true,
-     });
-
-     this.ws.on('open', () => {
-             const msg = {
-                     msg_type: 'data:subscribe',
-                     token: new Buffer.from(creds.email + ':' + this.token).toString('base64'),
-                     value: teslams.stream_columns.join(','),
-                     tag: this.vid,
-             };
-             this.ws.send(JSON.stringify(msg));
-     });
-
-     
-     */
-    
-    // better to do this by building JSON object
-    /*
-    std::string stream_setup_message =
-        R"({"method" : "GET",
-          "uri" : "ws://streaming.vn.teslamotors.com/streaming/151975870647/?values=speed,odometer,soc,elevation,est_heading,est_lat,est_lng,power,shift_state,range,est_range,heading",
-          "auth"   :
-                {   "user" : "colege@gmail.com",
-                    "pass" : "Umbert088"
-          }
-            "timeout" : "125000"
-    })";
-     
-    
-    std::string auth_tok = "colege@gmail.com:Umbert088";
-    std::vector<BYTE> auth_tok64 = base64_decode(auth_tok);
-    std::string auth_tok64s = std::string(auth_tok64.begin(),auth_tok64.end());
-    */
     
     if(debug) std::cout << "*****************************" << std::endl;
     if(debug) std::cout << "starting streaming connection" << std::endl;
