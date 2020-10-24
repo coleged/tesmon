@@ -9,6 +9,8 @@
 //  Copyright © 2020 colege. All rights reserved.
 //
 
+#include <iostream>
+
 #include "vehicle.hpp"
 
 extern bool debug;
@@ -118,4 +120,26 @@ extern bool debug;
         return true;
         
     }
+
+    std::vector<Vehicle>* getVehicles(RestAPI* myTesla){
+        
+        std::vector<Vehicle>* cars = new std::vector<Vehicle>;
+        
+            std::string cmd_str("/api/1/vehicles");
+            nlohmann::json rj = myTesla->get(cmd_str);
+            
+            int nc = rj["count"];           // number of cars
+        
+            if(debug) std::cout << nc << " cars found" << std::endl;
+        
+            nlohmann::json carsj = rj["response"];
+            
+            for( auto it = carsj.begin(); it != carsj.end(); ++it){
+                Vehicle new_vehicle(myTesla, *it);
+                cars->push_back(new_vehicle);
+            }//for(carsj)
+        
+        return cars;
+    };
+
    

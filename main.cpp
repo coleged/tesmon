@@ -6,6 +6,8 @@
 //
 //  Development prototying and experimentation
 //
+//  WORK IN PROGRESS
+//
 //  Created by Ed Cole on 15/10/2020.
 //  Copyright © 2020 colege. All rights reserved.
 //
@@ -33,43 +35,36 @@ bool debug = _DEBUG;
 
 int main(int argc, const char * argv[]) {
     
-    std::vector<Vehicle> cars;      // my cars
+    std::vector<Vehicle>* cars;      // my cars
 
     RestAPI *myTesla = new RestAPI; // initiate a REST connection with Tesla
     
-    std::string cmd_str("/api/1/vehicles");
-    nlohmann::json rj = myTesla->get(cmd_str);
-    int nc = rj["count"]; // number of cars
-    if(debug) std::cout << nc << " cars found" << std::endl;
-    nlohmann::json carsj = rj["response"];
+    cars = getVehicles(myTesla);    // get vector of cars from the API
     
-    for( auto it = carsj.begin(); it != carsj.end(); ++it){
-        Vehicle new_vehicle(myTesla, *it);
+    Vehicle thisCar;
+    
+    for( auto it = cars->begin(); it != cars->end(); ++it){
         
-        //std::cout << "attempting honk" << std::endl;
-        //new_vehicle.honk();
+        thisCar = *it;
         
         if(debug) std::cout << "attempting wakeup" << std::endl;
-        new_vehicle.wakeup();
-        
+        thisCar.wakeup();
         if(debug) std::cout << "pulling data" << std::endl;
-        new_vehicle.pullData();
+        thisCar.pullData();
         
-        cars.push_back(new_vehicle);
-    }//for(carsj)
-    
-    
-    if(debug){
-        std::cout     << std::endl << "first vehicle found: "
-                            << cars[0].getID()
-                            << " " << cars[0].getVIN()
-                            << std::endl;
-        if(cars[0].getState()){
-            std::cout << "Vehicle is online" << std::endl;
-        }else{
-            std::cout << "Vehicle is offline" << std::endl;
-        }
-    }//if debug
+        if(debug){
+            std::cout     << std::endl << "first vehicle found: "
+                                << thisCar.getID()
+                                << " " << thisCar.getVIN()
+                                << std::endl;
+            if(thisCar.getState()){
+                std::cout << "Vehicle is online" << std::endl;
+            }else{
+                std::cout << "Vehicle is offline" << std::endl;
+            }
+        }//if debug
+        
+    }//for(cars)
     
     // finished with this REST connection for now
     delete myTesla;
@@ -100,14 +95,9 @@ int main(int argc, const char * argv[]) {
     //message["value"] =  "est_lat,est_lng,power";
     //message["tag"] = cars[0].getIDS().c_str();
     //message["tag"] = cars[0].getID();
-    message["tag"] = cars[0].getID();
+    message["tag"] = thisCar.getID();
     
     std::string stream_setup_message = message.dump(4);
-    
-    //std::cout << stream_setup_message << std::endl;
-    //ws = MyWebSocket::WebSocket::from_url("ws://localhost:8126/foo");
-    // need to set redirects true
-    
     
     // Callback lambda
     ws.setOnMessageCallback([](const ix::WebSocketMessagePtr& msg)

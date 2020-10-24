@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include <restclient-cpp/connection.h>
 #include <restclient-cpp/restclient.h>
@@ -24,6 +25,7 @@
 #define TESLA_STREAMING "wss://streaming.vn.teslamotors.com/streaming/"
 #include "secrets.hpp"
 
+
 class RestAPI{
     
 public:
@@ -31,10 +33,13 @@ public:
     RestAPI();  // sets up connection and authenticates
     ~RestAPI(); // sends a disable
     
-    nlohmann::json get(std::string url);
-    nlohmann::json post(std::string url, nlohmann::json data);
+    nlohmann::json get(std::string url);                        // REST GET
+    nlohmann::json post(std::string url, nlohmann::json data);  // REST POST
     
-    int getCode();
+    
+    int getCode();          // returns code of last REST transaction
+    
+    
     
     RestClient::Connection* conn;
     
@@ -44,9 +49,9 @@ private:
     std::string access_token;
     std::string refresh_token;
     
-    int code;               // response code of last response on API
-    RestClient::HeaderFields headers;    // headers of last response on API
-    std::string body;       // body of last response on API
+    int code;                           // response code of last response on API
+    RestClient::HeaderFields headers;   // headers of last response on API
+    std::string body;                   // body of last response on API
         
 };
 

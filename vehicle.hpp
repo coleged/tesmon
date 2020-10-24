@@ -11,8 +11,8 @@
 #ifndef vehicle_hpp
 #define vehicle_hpp
 
-#include "rest.hpp"
 #include <nlohmann/json.hpp>
+#include "rest.hpp"
 
 class Vehicle {
     
@@ -40,9 +40,6 @@ public:
     bool pullVehicleConfig();
     bool pullMobileEnabled();
     bool pullNearbyChargingSites();
-    
-    
-    
     
     // command methods
     bool wakeup();
@@ -88,6 +85,8 @@ private:
     bool mobile_enable;
     
 };
+
+std::vector<Vehicle>* getVehicles(RestAPI* myTesla);
 
 
 #endif /* vehicle_hpp */
