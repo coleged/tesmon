@@ -36,38 +36,30 @@ bool debug = _DEBUG;
 int main(int argc, const char * argv[]) {
     
     std::vector<Vehicle>* cars;      // my cars
-
     RestAPI *myTesla = new RestAPI; // initiate a REST connection with Tesla
-    
     cars = getVehicles(myTesla);    // get vector of cars from the API
-    
-    Vehicle thisCar;
-    
-    for( auto it = cars->begin(); it != cars->end(); ++it){
-        
-        thisCar = *it;
-        
+    for( auto thisCar = cars->begin(); thisCar != cars->end(); ++thisCar){
         if(debug) std::cout << "attempting wakeup" << std::endl;
-        thisCar.wakeup();
+        thisCar->wakeup();
         if(debug) std::cout << "pulling data" << std::endl;
-        thisCar.pullData();
-        
+        thisCar->pullData();
         if(debug){
-            std::cout     << std::endl << "first vehicle found: "
-                                << thisCar.getID()
-                                << " " << thisCar.getVIN()
-                                << std::endl;
-            if(thisCar.getState()){
+            std::cout   << std::endl << "vehicle found: "
+                        << thisCar->getID()
+                        << " " << thisCar->getVIN()
+                        << std::endl;
+            if(thisCar->getState()){
                 std::cout << "Vehicle is online" << std::endl;
             }else{
                 std::cout << "Vehicle is offline" << std::endl;
             }
         }//if debug
-        
     }//for(cars)
     
     // finished with this REST connection for now
     delete myTesla;
+    
+    Vehicle firstCar = (*cars)[0]; // makes copy of Vector element on the stack
     
     if(debug) std::cout << "*****************************" << std::endl;
     if(debug) std::cout << "starting streaming connection" << std::endl;
@@ -76,7 +68,6 @@ int main(int argc, const char * argv[]) {
     MyWebSocket ws;
     ws.setUrl(TESLA_STREAMING);
     
-    //std::string auth_str = "colege@gmail.com:Umbert088";
     std::string auth_str = std::string(MYEMAIL) + ":" + std::string(MYPWD);
     std::string auth_tok64 = base64_encode(auth_str, (int)auth_str.size());
     
@@ -95,7 +86,7 @@ int main(int argc, const char * argv[]) {
     //message["value"] =  "est_lat,est_lng,power";
     //message["tag"] = cars[0].getIDS().c_str();
     //message["tag"] = cars[0].getID();
-    message["tag"] = thisCar.getID();
+    message["tag"] = firstCar.getID();
     
     std::string stream_setup_message = message.dump(4);
     
