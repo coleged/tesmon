@@ -29,11 +29,15 @@
 bool debug = _DEBUG;
 
 
+
+
 // *******************************
 //       main
 // *******************************
 
 int main(int argc, const char * argv[]) {
+    
+    
     
     std::vector<Vehicle>* cars;      // my cars
     RestAPI *myTesla = new RestAPI; // initiate a REST connection with Tesla
@@ -67,12 +71,26 @@ int main(int argc, const char * argv[]) {
     
     MyWebSocket ws;
     ws.setUrl(TESLA_STREAMING);
+    ws.enableAutomaticReconnection();
+    //ws.setHeartBeatPeriod( 45 );
+    usleep( 20000 );
+
     
     std::string auth_str = std::string(MYEMAIL) + ":" + std::string(MYPWD);
     std::string auth_tok64 = base64_encode(auth_str, (int)auth_str.size());
     
+   
+    ix::WebSocketHttpHeaders headers;
+    headers["Connection"] = "upgrade";
+    headers["Upgrade"] = "HTTP/1.1";
+    ws.setExtraHeaders(headers);
+    ws.addSubProtocol("HTTP/1.1");
     
-    //std::cout << "base64 token: " << auth_tok64 << std::endl;   // DEBUG
+    //print sub protocols   // DEBUG
+    for(auto it = ws.getSubProtocols().begin(); it != ws.getSubProtocols().end(); ++it){
+            std::cout << "SP:" << *it << std::endl;
+    }
+
     
     nlohmann::json message;
     //message["uri"]  = "wss://streaming.vn.teslamotors.com/streaming/151975870647/";
@@ -90,41 +108,35 @@ int main(int argc, const char * argv[]) {
     
     std::string stream_setup_message = message.dump(4);
     
-    // Callback lambda
-    ws.setOnMessageCallback([](const ix::WebSocketMessagePtr& msg)
-        {
-            if (msg->type == ix::WebSocketMessageType::Message)
-            {
-                std::cout << "<< Receiving <<" << msg->str << std::endl;
-                
-            }
-            else if (msg->type == ix::WebSocketMessageType::Open)
-            {
-                std::cout << std::endl << "Connection established" << std::endl;
-            }
-        }
-    );
     
+    ws.setOnMessageCallback(receiveMessage_cb);
+    
+    usleep( 20000 );
+
     ws.start();
+    //ws.connect(360);
+
     
     while ( ws.getReadyState() != ix::ReadyState::Open ){
         usleep(15000);
         std::cout << "+";
     }; // wait for connection
+    
     std::cout << std::endl;
     std::cout << ">> sending >>" << std::endl;
     std::cout << stream_setup_message << std::endl;
     ws.send(stream_setup_message.c_str());
     
+    
     // loops until connection closed
     while (true) {
-      
+
+     
         
     }
     
     // tidy up
     ws.stop();
-    
     
     return 0;
 }

@@ -23,5 +23,8 @@ class MyWebSocket: public ix::WebSocket{
     
 };
 
+void receiveMessage_cb(const ix::WebSocketMessagePtr& msg);
+    
+   
 
 #endif /* websocket_hpp */
