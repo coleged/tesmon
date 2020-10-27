@@ -93,7 +93,7 @@ int main(int argc, const char * argv[]) {
 
     
     nlohmann::json message;
-    //message["uri"]  = "wss://streaming.vn.teslamotors.com/streaming/151975870647/";
+    
     message["msg_type"] = "data:subscribe";
     //message["Connection"] = "keep_alive";
     //message["connection_timeout"] = "200000";
