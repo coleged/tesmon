@@ -15,7 +15,6 @@
 
 extern bool debug;
 
-
     Vehicle::Vehicle(){};
     Vehicle::Vehicle(RestAPI* connection, nlohmann::json new_car): vehicle{new_car}, api{connection}{
         // further constructor code
@@ -34,10 +33,39 @@ extern bool debug;
         return true;
     }
 
+    bool Vehicle::setClimate_state(nlohmann::json data){
+        climate_state = data["climate_state"];
+        // TODO: we need some validation code here
+        return true;
+    }
+
+    bool Vehicle::setCharge_state(nlohmann::json data){
+        charge_state = data["charge_state"];
+        // TODO: we need some validation code here
+        return true;
+    }
+
     bool Vehicle::setDrive_state(nlohmann::json data){
         drive_state = data["drive_state"];
-        
-        // TODO: we need some velidation code here
+        // TODO: we need some validation code here
+        return true;
+    }
+
+    bool Vehicle::setGui_settings(nlohmann::json data){
+        gui_settings = data["gui_settings"];
+        // TODO: we need some validation code here
+        return true;
+    }
+
+    bool Vehicle::setVehicle_state(nlohmann::json data){
+        vehicle_state = data["vehicle_state"];
+        // TODO: we need some validation code here
+        return true;
+    }
+
+    bool Vehicle::setVehicle_config(nlohmann::json data){
+        vehicle_config = data["vehicle_config"];
+        // TODO: we need some validation code here
         return true;
     }
     
@@ -56,36 +84,109 @@ extern bool debug;
     
     std::string Vehicle::getVIN(){
         return vehicle["vin"];
-        
     }
+
+// pullers - pull various vehicle state objects from API
+
+    
     
     bool Vehicle::pullData(){
-        std::string cmd_str = "/api/1/vehicles/" + getIDS() + "/vehicle_data";
-        
-        nlohmann::json rj = api->get(cmd_str);
-        if(debug) std::cout << rj.dump(4) << std::endl;    // DEBUG
-        setVehicle_data(rj["response"]);
-        if(debug) std::cout << "vehicle_data: response code: " << api->getCode() << std::endl;    // DEBUG
-        return true;
+        setVehicle_data(getFromAPI("vehicle_data"));
+        if(debug) {
+            std::cout   << "pullData(): vehicle_data: response code: "
+                        << api->getCode() << std::endl;
+        }
+        if (api->getCode() == 200){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    bool Vehicle::pullClimateState(){
+        setClimate_state(getFromAPI("climate_state"));
+        if(debug) {
+            std::cout   << "pullData(): climate_state: response code: "
+                        << api->getCode() << std::endl;
+        }
+        if (api->getCode() == 200){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    bool Vehicle::pullChargeState(){
+        setCharge_state(getFromAPI("charge_state"));
+        if(debug) {
+            std::cout   << "pullData(): charge_state: response code: "
+                        << api->getCode() << std::endl;
+        }
+        if (api->getCode() == 200){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     bool Vehicle::pullDriveState(){
-        std::string cmd_str = "/api/1/vehicles/" + getIDS() + "/drive_state";
-        
-        nlohmann::json rj = api->get(cmd_str);
-        if(debug) std::cout << rj.dump(4);                          // DEBUG
-        setDrive_state(rj["response"]);
-        if(debug) std::cout << "vehicle_data: response code: "
-                            << api->getCode() << std::endl;         // DEBUG
-        return true;
-        
-    };
+        setDrive_state(getFromAPI("drive_state"));
+        if(debug) {
+            std::cout   << "pullData(): drive_state: response code: "
+                        << api->getCode() << std::endl;
+        }
+        if (api->getCode() == 200){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    bool Vehicle::pullGuiSettings(){
+        setGui_settings(getFromAPI("gui_settings"));
+        if(debug) {
+            std::cout   << "pullData(): gui_settings: response code: "
+                        << api->getCode() << std::endl;
+        }
+        if (api->getCode() == 200){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    bool Vehicle::pullVehicleState(){
+        setVehicle_state(getFromAPI("vehicle_state"));
+        if(debug) {
+            std::cout   << "pullData(): vehicle_state: response code: "
+                        << api->getCode() << std::endl;
+        }
+        if (api->getCode() == 200){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    bool Vehicle::pullVehicleConfig(){
+        setVehicle_config(getFromAPI("vehicle_config"));
+        if(debug) {
+            std::cout   << "pullData(): vehicle_config: response code: "
+                        << api->getCode() << std::endl;
+        }
+        if (api->getCode() == 200){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     
     bool Vehicle::wakeup(){
         // !!!!!!!!!!!!!!!!!!!!!!!!!!
         // !!!!!This doesn't work!!!!
         // !!!!!!!!!!!!!!!!!!!!!!!!!!
-        std::string cmd_str = "/api/1/vehicles/" + getIDS() + "/command/wake_up";
+        std::string cmd_str = TESLA_URI_PREFIX + getIDS() + "/command/wake_up";
         
         nlohmann::json data;
         
@@ -105,7 +206,7 @@ extern bool debug;
     }
     
     bool Vehicle::honk(){
-        std::string cmd_str = "/api/1/vehicles/" + getIDS() + "/command/honk_horn";
+        std::string cmd_str = TESLA_URI_PREFIX + getIDS() + "/command/honk_horn";
         
         std::string password = MYPWD;
         nlohmann::json data;
@@ -121,25 +222,41 @@ extern bool debug;
         
     }
 
-    std::vector<Vehicle>* getVehicles(RestAPI* myTesla){
-        
-        std::vector<Vehicle>* cars = new std::vector<Vehicle>;
-        
-            std::string cmd_str("/api/1/vehicles");
-            nlohmann::json rj = myTesla->get(cmd_str);
-            
-            int nc = rj["count"];           // number of cars
-        
-            if(debug) std::cout << nc << " cars found" << std::endl;
-        
-            nlohmann::json carsj = rj["response"];
-            
-            for( auto it = carsj.begin(); it != carsj.end(); ++it){
-                Vehicle new_vehicle(myTesla, *it);
-                cars->push_back(new_vehicle);
-            }//for(carsj)
-        
-        return cars;
+    
+
+// PRIVATE METHODS
+
+    nlohmann::json Vehicle::getFromAPI(std::string cmd){
+        std::string cmd_str = TESLA_URI_PREFIX + getIDS() + "/" + cmd;
+        nlohmann::json rj = api->get(cmd_str);
+        if(debug) {
+            std::cout << "Vehicle::getFromAPI()" << std::endl;
+            std::cout << rj.dump(4) << std::endl;    // DEBUG
+        }
+        return rj["response"];
     };
+
+// NON MEMBER FUNCTIONS
+
+std::vector<Vehicle>* getVehicles(RestAPI* myTesla){
+    
+    std::vector<Vehicle>* cars = new std::vector<Vehicle>;
+    
+        std::string cmd_str(TESLA_URI_PREFIX);
+        nlohmann::json rj = myTesla->get(cmd_str);
+        
+        int nc = rj["count"];           // number of cars
+    
+        if(debug) std::cout << nc << " cars found" << std::endl;
+    
+        nlohmann::json carsj = rj["response"];
+        
+        for( auto it = carsj.begin(); it != carsj.end(); ++it){
+            Vehicle new_vehicle(myTesla, *it);
+            cars->push_back(new_vehicle);
+        }//for(carsj)
+    
+    return cars;
+};
 
    

@@ -23,6 +23,8 @@
 
 #define TESLA_URI  "https://owner-api.teslamotors.com"
 #define TESLA_STREAMING "wss://streaming.vn.teslamotors.com/streaming/"
+
+#define TESLA_URI_PREFIX "/api/1/vehicles/"
 #include "secrets.hpp"
 
 

@@ -28,18 +28,23 @@ public:
     
     // Setters
     bool setVehicle_data(nlohmann::json data);
+    bool setClimate_state(nlohmann::json data);
+    bool setCharge_state(nlohmann::json data);
     bool setDrive_state(nlohmann::json data);
+    bool setGui_settings(nlohmann::json data);
+    bool setVehicle_state(nlohmann::json data);
+    bool setVehicle_config(nlohmann::json data);
     
     // car query (update) methods
     bool pullData();
     bool pullChargeState();
     bool pullClimateState();
     bool pullDriveState();
-    bool pullGUISettings();
+    bool pullGuiSettings();
     bool pullVehicleState();
     bool pullVehicleConfig();
-    bool pullMobileEnabled();
-    bool pullNearbyChargingSites();
+    bool pullMobileEnabled();       // TO BE IMPLIMENTED
+    bool pullNearbyChargingSites(); // TO BE IMPLIMENTED
     
     // command methods
     bool wakeup();
@@ -51,6 +56,9 @@ public:
     
     
 private:
+    
+    nlohmann::json getFromAPI(std::string cmd);
+    
     RestAPI* api;           // REST connection to Tesla
     
     nlohmann::json vehicle;
