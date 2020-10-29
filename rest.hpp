@@ -40,6 +40,7 @@ public:
     
     
     int getCode();          // returns code of last REST transaction
+    nlohmann::json getHeaders();
     
     
     

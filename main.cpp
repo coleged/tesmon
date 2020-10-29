@@ -13,7 +13,6 @@
 //
 // Initial testing of tesla-api over REST
 
-
 #include <iostream>
 #include <restclient-cpp/connection.h>
 #include <restclient-cpp/restclient.h>
@@ -37,8 +36,6 @@ bool debug = _DEBUG;
 
 int main(int argc, const char * argv[]) {
     
-    
-    
     std::vector<Vehicle>* cars;      // my cars
     RestAPI *myTesla = new RestAPI; // initiate a REST connection with Tesla
     cars = getVehicles(myTesla);    // get vector of cars from the API
@@ -50,15 +47,18 @@ int main(int argc, const char * argv[]) {
         if(debug){
             std::cout   << std::endl << "vehicle found: "
                         << thisCar->getID()
-                        << " " << thisCar->getVIN()
-                        << std::endl;
+                        << " " << thisCar->getVIN();
             if(thisCar->getState()){
-                std::cout << "Vehicle is online" << std::endl;
+                std::cout << " Vehicle online" << std::endl;
             }else{
-                std::cout << "Vehicle is offline" << std::endl;
+                std::cout << " Vehicle offline" << std::endl;
             }
         }//if debug
     }//for(cars)
+    
+    // honk the first car on the vector
+    Vehicle thisCar = cars->front();
+    thisCar.honk();
     
     // finished with this REST connection for now
     delete myTesla;

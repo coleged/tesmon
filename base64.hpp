@@ -28,11 +28,11 @@
 #include <string>
 typedef unsigned char BYTE;
 
-// encode a buffer - std::vector<BYTE>
+// encode a buffer - std::vector<BYTE> into BASE64 std::string
 std::string base64_encode(BYTE const* buf, unsigned int bufLen);
-// encode a string - std::string
+// encode a string - std::string into BASE64 std::string
 std::string base64_encode(std::string buf, unsigned int bufLen);
-
+// decode BASE64 std::string into std::vector<BYTE>
 std::vector<BYTE> base64_decode(std::string const&);
 
 #endif

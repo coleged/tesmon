@@ -41,7 +41,6 @@ RestAPI::RestAPI(){
     refresh_token = rj["refresh_token"];
     
     conn->AppendHeader("Authorization",  "Bearer " + access_token);
-    
 
 }
 
@@ -74,5 +73,18 @@ nlohmann::json RestAPI::post(std::string url,   nlohmann::json data){
 int RestAPI::getCode(){
     return code;
 };
+
+nlohmann::json RestAPI::getHeaders(){
+    // looks like the headers are a map of null terminated strings.
+    nlohmann::json hj;
+    std::string key, value;
+    for (auto h : headers){
+        key = h.first;
+        value = h.second;
+        hj[key] = value;
+    }
+    
+    return hj;
+}
 
 

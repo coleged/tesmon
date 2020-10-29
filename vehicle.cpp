@@ -181,6 +181,7 @@ extern bool debug;
         }
     }
 
+
     
     bool Vehicle::wakeup(){
         // !!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -236,14 +237,35 @@ extern bool debug;
         return rj["response"];
     };
 
+    nlohmann::json Vehicle::postToAPI(std::string cmd){
+        std::string cmd_str = TESLA_URI_PREFIX + getIDS() + "/command/" + cmd;
+        
+        nlohmann::json data;
+        
+        data["client_id"] = TESLA_CLIENT_ID;                        // additional elements
+        data["client_secret"] = TESLA_CLIENT_SECRET;
+        data["email"] = MYEMAIL;
+        data["password"] = MYPWD;
+        
+        if(debug) std::cout << data.dump(4);                        // DEBUG
+        
+        nlohmann::json rj = api->post(cmd_str,data);
+        return rj["response"];
+    };
+
 // NON MEMBER FUNCTIONS
 
 std::vector<Vehicle>* getVehicles(RestAPI* myTesla){
     
+    // create vector on the heap
     std::vector<Vehicle>* cars = new std::vector<Vehicle>;
     
         std::string cmd_str(TESLA_URI_PREFIX);
         nlohmann::json rj = myTesla->get(cmd_str);
+        if (debug) {
+            std::cout << "Recieved Headers" << std::endl;
+            std::cout << myTesla->getHeaders().dump(4) << std::endl;
+        }
         
         int nc = rj["count"];           // number of cars
     
