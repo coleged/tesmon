@@ -21,6 +21,7 @@
 #include "vehicle.hpp"
 #include "websocket.hpp"
 #include "base64.hpp"
+#include "signals.hpp"
 
 #ifndef _DEBUG
 #define _DEBUG  true
@@ -28,13 +29,15 @@
 bool debug = _DEBUG;
 
 
-
+extern int mySignal;    // declared in signals.cpp
 
 // *******************************
 //       main
 // *******************************
 
 int main(int argc, const char * argv[]) {
+    
+    signal(SIGINT, signalHandler);  
     
     std::vector<Vehicle>* cars;      // my cars
     RestAPI *myTesla = new RestAPI; // initiate a REST connection with Tesla
@@ -60,8 +63,7 @@ int main(int argc, const char * argv[]) {
     Vehicle thisCar = cars->front();
     thisCar.honk();
     
-    // finished with this REST connection for now
-    delete myTesla;
+    
     
     Vehicle firstCar = (*cars)[0]; // makes copy of Vector element on the stack
     
@@ -128,15 +130,24 @@ int main(int argc, const char * argv[]) {
     ws.send(stream_setup_message.c_str());
     
     
-    // loops until connection closed
-    while (true) {
-
-     
+    // loops until SIGINT recieved via signal handler
+    // would be better to use wait
+    while (mySignal != SIGINT) {
+        usleep(2000);
+        pause();    // this will pause execution of this thread until any signal
+                    // is received. The WebSocket worker thread listening for input
+                    // which is handled by the callback is independant of this
+        std::cout << "un pause" << std::endl;
         
     }
     
     // tidy up
+    
+    // close streaming
     ws.stop();
+    // destroy REST
+    delete myTesla;
+    
     
     return 0;
 }

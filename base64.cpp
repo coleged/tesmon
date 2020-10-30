@@ -12,6 +12,8 @@
 #include "base64.hpp"
 #include <iostream>
 
+extern bool debug;
+
 static const std::string base64_chars =
              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
              "abcdefghijklmnopqrstuvwxyz"
