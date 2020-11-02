@@ -6,6 +6,8 @@ A working project exploring the REST API to the Tesla Electric Car.
 Status:
                        Have  REST API  worked out.
   23/10/20        Streaming API. Initiation handshake seems to be working, but no data streaming yet.
+  2/11/20          Much tidy up of classes. Now have wakeup working reliably. Still not managed to get
+                            any streaming.
 
 
 Written in C++ it is informed by https://tesla-api.timdorr.com/ description of the Tesla API, and other insight plundered from bits of others code.
