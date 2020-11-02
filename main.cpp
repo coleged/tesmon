@@ -44,7 +44,12 @@ int main(int argc, const char * argv[]) {
     cars = getVehicles(myTesla);    // get vector of cars from the API
     for( auto thisCar = cars->begin(); thisCar != cars->end(); ++thisCar){
         if(debug) std::cout << "attempting wakeup" << std::endl;
-        thisCar->wakeup();
+        while( !thisCar->wakeup()){
+            // Vehicle didn't wake up on first attempt.
+            usleep(30e6); // backoff 30s
+            if(debug) std::cout << "Wakey Wakey ..." << std::endl;
+        };
+        
         if(debug) std::cout << "pulling data" << std::endl;
         thisCar->pullData();
         if(debug){
@@ -61,7 +66,10 @@ int main(int argc, const char * argv[]) {
     
     // honk the first car on the vector
     Vehicle thisCar = cars->front();
-    thisCar.honk();
+    if (debug) std::cout << "Honk" << std::endl;
+    if (thisCar.honk()){
+        if(debug) std::cout << "HONK SUCCEEDED" << std::endl;
+    };
     
     
     
@@ -85,6 +93,7 @@ int main(int argc, const char * argv[]) {
     ix::WebSocketHttpHeaders headers;
     headers["Connection"] = "upgrade";
     headers["Upgrade"] = "HTTP/1.1";
+    headers["followRedirects"] = "true"; // not sure about this one
     ws.setExtraHeaders(headers);
     ws.addSubProtocol("HTTP/1.1");
     
@@ -98,7 +107,7 @@ int main(int argc, const char * argv[]) {
     
     message["msg_type"] = "data:subscribe";
     //message["Connection"] = "keep_alive";
-    //message["connection_timeout"] = "200000";
+    message["connection_timeout"] = "20";
     message["token"] = auth_tok64.c_str();
     
     message["value"] =  "speed,odometer,soc,elevation,est_heading,est_lat,est_lng,power,shift_state,range,est_range,heading";

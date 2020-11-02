@@ -180,47 +180,17 @@ extern bool debug;
             return false;
         }
     }
-
-
     
     bool Vehicle::wakeup(){
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!
-        // !!!!!This doesn't work!!!!
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!
-        std::string cmd_str = TESLA_URI_PREFIX + getIDS() + "/command/wake_up";
-        
-        nlohmann::json data;
-        
-        data["client_id"] = TESLA_CLIENT_ID;                        // additional elements
-        data["client_secret"] = TESLA_CLIENT_SECRET;
-        data["email"] = MYEMAIL;
-        data["password"] = MYPWD;
-        
-        if(debug) std::cout << data.dump(4);                        // DEBUG
-        
-        nlohmann::json rj = api->post(cmd_str,data);
+        nlohmann::json rj = postToAPI("wake_up");
         if(debug) std::cout << rj.dump(4);                          // DEBUG
-        if(debug) std::cout << "wake_up: response code: "
-                    << api->getCode() << std::endl;                 // DEBUG
-        return true;
-        
+        return rj["result"];
     }
     
     bool Vehicle::honk(){
-        std::string cmd_str = TESLA_URI_PREFIX + getIDS() + "/command/honk_horn";
-        
-        std::string password = MYPWD;
-        nlohmann::json data;
-        data["password"] = password;
-        
-        if(debug) std::cout << cmd_str << std::endl;                // DEBUG
-        if(debug) std::cout << data << std::endl;                   // DEBUG
-        
-        nlohmann::json rj = api->post(cmd_str,data);
+        nlohmann::json rj = postToAPI("honk_horn");
         if(debug) std::cout << rj.dump(4);                          // DEBUG
-        
-        return true;
-        
+        return rj["result"];
     }
 
     
@@ -266,6 +236,13 @@ std::vector<Vehicle>* getVehicles(RestAPI* myTesla){
             std::cout << "Recieved Headers" << std::endl;
             std::cout << myTesla->getHeaders().dump(4) << std::endl;
         }
+    
+        // TODO - handle errors
+        /*
+        switch( myTesla->getCode()){
+            
+        }
+         */
         
         int nc = rj["count"];           // number of cars
     

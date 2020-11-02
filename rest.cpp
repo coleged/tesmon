@@ -75,16 +75,20 @@ int RestAPI::getCode(){
 };
 
 nlohmann::json RestAPI::getHeaders(){
-    // looks like the headers are a map of null terminated strings.
-    nlohmann::json hj;
-    std::string key, value;
-    for (auto h : headers){
-        key = h.first;
-        value = h.second;
-        hj[key] = value;
-    }
+    // returns headers (JSON) of last message received
+   
     
-    return hj;
+    return (h2json(&headers));
 }
+
+nlohmann::json RestAPI::h2json(RestClient::HeaderFields* headers){
+     // the headers are a map of null terminated strings.
+    nlohmann::json hj;
+    for (auto h : *headers){
+        hj[h.first] = h.second;
+    }
+    return hj;
+    
+};
 
 

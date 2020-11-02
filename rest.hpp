@@ -42,18 +42,22 @@ public:
     int getCode();          // returns code of last REST transaction
     nlohmann::json getHeaders();
     
-    
-    
     RestClient::Connection* conn;
     
 private:
     
-    RestClient::HeaderFields send_headers;   // sending headers
-    std::string access_token;
-    std::string refresh_token;
+    nlohmann::json h2json(RestClient::HeaderFields* headers);
     
-    int code;                           // response code of last response on API
+    // send message
+    RestClient::HeaderFields    send_headers;   // sending headers
+    std::string                 access_token;
+    std::string                 refresh_token;
+    
+    // response message
+    int code;                           // code returned on last response on API
     RestClient::HeaderFields headers;   // headers of last response on API
+                                        // map of null terminated character strings
+    nlohmann::json          headersj;   // headers serialised into json
     std::string body;                   // body of last response on API
         
 };
