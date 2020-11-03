@@ -3,9 +3,9 @@ October 2020
 
 A working project exploring the REST API to the Tesla Electric Car.
 
-Status:
+Status:<br>
                        Have  REST API  worked out.
-  23/10/20        Streaming API. Initiation handshake seems to be working, but no data streaming yet.
+  23/10/20        Streaming API. Initiation handshake seems to be working, but no data streaming yet.<br>
   2/11/20          Much tidy up of classes. Now have wakeup working reliably. Still not managed to get
                             any streaming.
 
