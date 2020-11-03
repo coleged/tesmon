@@ -1,9 +1,9 @@
 
-<h>October 2020</h>
+October 2020
 
 A working project exploring the REST API to the Tesla Electric Car.
 
-<h>Status:</h>
+Status:
 <bl>
 <bi>Have  REST API  worked out.</bi>
 <bi>23/10/20        Streaming API. Initiation handshake seems to be working, but no data streaming yet.</bi>
