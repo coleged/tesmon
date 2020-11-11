@@ -66,13 +66,21 @@ int main(int argc, const char * argv[]) {
     
     // honk the first car on the vector
     Vehicle thisCar = cars->front();
+    /*
     if (debug) std::cout << "Honk" << std::endl;
     if (thisCar.honk()){
         if(debug) std::cout << "HONK SUCCEEDED" << std::endl;
     };
+     */
+    
+    std::cout << "battery level " << thisCar.getBatteryLevel() << "%" << std::endl;
+    std::cout << "battery range " << thisCar.getBatteryRange() << "miles" << std::endl;
+    std::cout << "Temperatures in:" << thisCar.getTempIn() << " out:" << thisCar.getTempOut() << std::endl;
     
     
+    //exit(0);
     
+    // Further work needed bwlow
     Vehicle firstCar = (*cars)[0]; // makes copy of Vector element on the stack
     
     if(debug) std::cout << "*****************************" << std::endl;

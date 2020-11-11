@@ -39,8 +39,9 @@ public:
     nlohmann::json post(std::string url, nlohmann::json data);  // REST POST
     
     
-    int getCode();          // returns code of last REST transaction
-    nlohmann::json getHeaders();
+    int             getCode();          // returns code of last REST transaction
+    nlohmann::json  getHeaders();
+    std::string     getBody();
     
     RestClient::Connection* conn;
     
@@ -58,7 +59,7 @@ private:
     RestClient::HeaderFields headers;   // headers of last response on API
                                         // map of null terminated character strings
     nlohmann::json          headersj;   // headers serialised into json
-    std::string body;                   // body of last response on API
+    std::string             body;       // body of last response on API
         
 };
 

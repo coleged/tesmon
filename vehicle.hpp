@@ -13,6 +13,7 @@
 
 #include <nlohmann/json.hpp>
 #include "rest.hpp"
+#include <string>
 
 class Vehicle {
     
@@ -25,6 +26,11 @@ public:
     std::string getIDS();
     bool getState();
     std::string getVIN();
+    int getBatteryLevel();
+    int getBatteryRange();
+    float getTempIn();
+    float getTempOut();
+    
     
     // Setters
     bool setVehicle_data(nlohmann::json data);

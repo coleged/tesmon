@@ -86,10 +86,28 @@ extern bool debug;
         return vehicle["vin"];
     }
 
+    int Vehicle::getBatteryLevel(){
+        
+        return (charge_state["battery_level"]);
+    }
+
+    int Vehicle::getBatteryRange(){
+        
+        return (charge_state["battery_range"]);
+    }
+
+    float Vehicle::getTempIn(){
+        return (climate_state["inside_temp"]);
+    }
+
+    float Vehicle::getTempOut(){
+        return (climate_state["outside_temp"]);
+    }
+    
+
+
 // pullers - pull various vehicle state objects from API
 
-    
-    
     bool Vehicle::pullData(){
         setVehicle_data(getFromAPI("vehicle_data"));
         if(debug) {
@@ -183,14 +201,22 @@ extern bool debug;
     
     bool Vehicle::wakeup(){
         nlohmann::json rj = postToAPI("wake_up");
-        if(debug) std::cout << rj.dump(4);                          // DEBUG
-        return rj["result"];
+        if(debug) {
+            std::cout << rj.dump(4);                          // DEBUG
+        }
+        if( rj["result"] == true ){
+            return true;
+        }
+        return false;
     }
     
     bool Vehicle::honk(){
         nlohmann::json rj = postToAPI("honk_horn");
         if(debug) std::cout << rj.dump(4);                          // DEBUG
-        return rj["result"];
+        if( rj["result"] == true ){
+            return true;
+        }
+        return false;
     }
 
     
@@ -217,9 +243,17 @@ extern bool debug;
         data["email"] = MYEMAIL;
         data["password"] = MYPWD;
         
-        if(debug) std::cout << data.dump(4);                        // DEBUG
+        if(debug) {
+            std::cout << "post data" << std::endl;
+            std::cout << data.dump(4);                        // DEBUG
+        }
         
         nlohmann::json rj = api->post(cmd_str,data);
+        if(debug) {
+            std::cout << "rec'd code " << api->getCode() <<  std::endl;
+            std::cout << "rec'd data" << std::endl;
+            std::cout << api->getHeaders().dump() << std::endl;                        // DEBUG
+        }
         return rj["response"];
     };
 

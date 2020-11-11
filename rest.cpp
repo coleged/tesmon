@@ -11,6 +11,8 @@
 
 #include "rest.hpp"
 
+extern bool debug;
+
 // Constructor
 RestAPI::RestAPI(){
     
@@ -33,7 +35,12 @@ RestAPI::RestAPI(){
     
     code = r.code;
     headers = r.headers;
-    body = r.body;
+    body = std::string(r.body);
+    
+    if (debug) {
+        std::cout << "API init " << code << std::endl;
+        std::cout << body << std::endl;
+    }
     
     nlohmann::json rj = nlohmann::json::parse(body);
     
@@ -66,6 +73,7 @@ nlohmann::json RestAPI::post(std::string url,   nlohmann::json data){
     // parse the body into json oject
     code = r.code;
     headers = r.headers;
+    body = r.body;
     nlohmann::json rj = nlohmann::json::parse(r.body);
     return rj;
 }
@@ -77,8 +85,13 @@ int RestAPI::getCode(){
 nlohmann::json RestAPI::getHeaders(){
     // returns headers (JSON) of last message received
    
-    
     return (h2json(&headers));
+}
+
+std::string RestAPI::getBody(){
+    // returns body (JSON) of last message received
+   
+    return (body);
 }
 
 nlohmann::json RestAPI::h2json(RestClient::HeaderFields* headers){
